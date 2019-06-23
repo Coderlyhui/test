@@ -1,0 +1,30 @@
+	/**
+	cards-->treeCards(組裝除children以外的屬性)-->rootCards、childrenCards<TreeCard>-->递归填值
+	迭代插入子级数据
+	@param rootCard 父级数据对象
+	@param childernCards 所有子级数据集合
+	@param flag 迭代的 层级 数 （目录层数 为一层 值为 1 ，两层 值为2 ，以此类推 ，不知层 值为0）
+	@param map 预期的Map对象
+	*/
+	public static void facdeTree(TreeCard card, List<TreeCard> childernCards, int flag,
+			Map<String, String> map) {
+		 // 判断层级
+		 if (flag == 0) {
+		 	// 创建保存子级数据
+		 	List<Card> newArrayList = new ArrayList<>();
+		 	// 遍历查找子级数据
+		 	String path = card.getPath().equals(null) ? "" : card.getPath() + "," + card.getPath();
+		 	childernCards.stream().filter(c -> !map.containsKey(c.getId()))
+		 			.filter(c -> c.getPath().equals(path)).forEach(c -> {
+		 				// 放入Map 集合，递归循环时可以跳过这个子级数据，提高执行效率
+		 				map.put(c.getId(), c.getPath());
+		 				// 获取当前目录的子级目录
+		 				facdeTree(c, childernCards, flag, map);
+		 				// 加入子级数据到集合
+		 				newArrayList.add(c);
+		 			});
+		 	// 将子级数据set到父级数据中
+		 	card.setCards(newArrayList);
+		 }		
+		 
+	}
